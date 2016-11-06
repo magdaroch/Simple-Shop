@@ -53,6 +53,9 @@ class User {
             $row = $res->fetch_assoc();
             $user = new User($row['idUser'], $row['email']);
             $user->setPassword($row['password'],false);
+            
+            //po ten false?
+            
             return $user;
         }
     }
