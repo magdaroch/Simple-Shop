@@ -52,9 +52,24 @@ class User {
         if ($res->num_rows == 1) {
             $row = $res->fetch_assoc();
             $user = new User($row['idUser'], $row['email']);
-            $user->setPassword($row['password'],false);
+            $user->setPassword($row['password']);
             
-            //po ten false?
+           
+            
+            return $user;
+        }
+    }
+    public static function getUserById(mysqli $connection,$idUser)
+    {
+        $email = $connection->real_escape_string($email);
+        $query = "SELECT * FROM Users WHERE idUser='" . $idUser. "'";
+        $res = $connection->query($query);
+        if ($res->num_rows == 1) {
+            $row = $res->fetch_assoc();
+            $user = new User($row['idUser'], $row['email']);
+            $user->setPassword($row['password']);
+            
+           
             
             return $user;
         }

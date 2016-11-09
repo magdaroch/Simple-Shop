@@ -28,12 +28,11 @@ class Product {
     public $descriptions;
     public $quantity;
 
-    public function __construct() {
-        $this->idSubject = -1;
-        $this->name = '';
-        $this->price = '';
-        $this->descriptions = '';
-        $this->quantity = 0;
+    public function __construct($idProduct = -1, $name = '', $price = '', $descriptions = '', $quantity = 0) {
+        $this->setName($name);
+        $this->setPrice($price);
+        $this->setDescriptions($descriptions);
+        $this->setQuantity($quantity);
     }
 
     public function addProductToTheDB(mysqli $connection) {
