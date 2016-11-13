@@ -11,21 +11,23 @@ class User {
     protected $surname;
     protected $email;
     protected $password;
+    protected $address;
 
 
-    public function __construct($idUser=-1,$name='',$surname='',$email='',$password='')
+    public function __construct($idUser=-1,$name='',$surname='',$email='',$password='',$address='')
     {
         $this->setIdUser($idUser);
         $this->setName($name);
-        $this->setEmail($surname);
+        $this->setSurname($surname);
         $this->setEmail($email);
         $this->setPassword($password);
+        $this->setAddress($address);
     }
     public function saveToDB(mysqli $connection){
         $query = '';
         if($this->idUser == -1){
-            $query = "INSERT INTO Users (idUser, name, surname, email, password) ".
-                "VALUES ('".$this->idUser."','".$this->name."','".$this->surname."','".$this->email."','".$this->password."')";
+            $query = "INSERT INTO Users (idUser, name, surname, email, password, address) ".
+                "VALUES ('".$this->idUser."','".$this->name."','".$this->surname."','".$this->email."','".$this->password."','".$this->address."')";
             if($connection->query($query)){
                 return true;
             }else{
@@ -36,6 +38,7 @@ class User {
                 ."surname='".$this->surname."',"
                 ."email='".$this->email."',"
                 ."password='".$this->password."' "
+                ."address='".$this->address."' "
                 ."WHERE idUser=".$this->idUser;
             if($connection->query($query)){
                 return true;
@@ -52,7 +55,7 @@ class User {
         if ($res->num_rows == 1) {
             $row = $res->fetch_assoc();
             $user = new User($row['idUser'], $row['email']);
-            $user->setPassword($row['password'],false);
+            $user->setPassword($row['password']);
             return $user;
         }
     }
