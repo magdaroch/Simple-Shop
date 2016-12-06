@@ -48,13 +48,13 @@ class Product {
         }
     }
 
-    public function loadAllProduct(mysqli $connection) {
+    public static function loadAllProduct(mysqli $connection) {
         $products = [];
         $query = "SELECT * FROM Product";
         $res = $connection->query($query);
-        if ($res && $res->num_rows >= 1) {
+        if ($res ) {
             foreach ($res as $row) {
-                $row = $res->fetch_assoc();
+                
                 $product = new Product();
                 $product->idProduct = $row['idProduct'];
                 $product->name = $row['name'];
@@ -67,18 +67,39 @@ class Product {
         }
     }
 
-    public function loadProductById(mysqli $connection, $idSubject) {
-        $query = "SELECT * FROM Product WHERE idSubject='" . $idSubject . "'";
-        $result = $connection->query($query);
+    public static function loadProductById(mysqli $connection,$idProduct) {
+        $query = "SELECT * FROM Product WHERE idProduct='" . $idProduct . "'";
+         $result = $connection->query($query);
+         if ($result == true && $result->num_rows == 1) {
+            $row = $result->fetch_assoc();
+            $productToShow = new Product();
+            $productToShow->idProduct = $row['idProduct'];
+            $productToShow->name=$row['name'];
+            $productToShow->price=$row['price'];
+            $productToShow->descriptions=$row['descriptions'];
+            $productToShow->price=$row['price'];
+            return $productToShow;
+            
+         }
+        
+        var_dump($result);
+        
         return $result;
     }
 
-    public function loadSProductByName(mysqli $connection, $name) {
+    public static function loadSProductByName(mysqli $connection, $name) {
         $query = "SELECT * FROM Product WHERE name'" . $name . "'";
         $result = $connection->query($query);
+        if ($result->num_rows == 1) {
+        $row = $result->fetch_assoc();
+        }
         return $result;
     }
+    public function getIdProduct() {
+        return $this->idProduct;
+    }
 
+    
     function getName() {
         return $this->name;
     }

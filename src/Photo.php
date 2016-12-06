@@ -52,17 +52,24 @@ class Photo {
     public static function loadAllPhotoFromBD(mysqli $conn) {
         $photos = [];
         $query = "SELECT * FROM Photo";
-        $res = $connection->query($query);
-        if ($res && $res->num_rows >= 1) {
+        
+
+        $res = $conn->query($query);
+        if ($res) {
             foreach ($res as $row) {
-                $row = $res->fetch_assoc();
+
+               
                 $photo = new Photo;
                 $photo->idPicture = $row['idPicture'];
                 $photo->idProduct = $row['idProduct'];
                 $photo->caption = $row['caption'];
                 $photo->img = $row['img'];
+
                 $photos[] = $photo;
             }
+            return $photos;
+        } else {
+            return NULL;
         }
     }
 

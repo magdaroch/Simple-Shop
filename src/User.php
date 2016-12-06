@@ -1,55 +1,65 @@
 <?php
+
 /**
- * Created by PhpStorm.
- * User: Magda
- * Date: 2016-11-06
- * Time: 12:32
+  CREATE TABLE Users(
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  name VARCHAR(255) NOT NULL,
+  surname VARCHAR(255) NOT NULL,
+  email VARCHAR(255) NOT NULL UNIQUE,
+  password VARCHAR(255) NOT NULL
+  );
  */
 class User {
+
     protected $idUser;
     protected $name;
     protected $surname;
     protected $email;
     protected $password;
-    public function __construct($idUser=-1,$name='',$surname='',$email='',$password='')
-    {
+
+    public function __construct($idUser = -1, $name = '', $surname = '', $email = '', $password = '') {
         $this->setIdUser($idUser);
         $this->setName($name);
         $this->setEmail($surname);
         $this->setEmail($email);
         $this->setPassword($password);
     }
-    public function saveToDB(mysqli $connection){
-        $query = '';
-        if($this->idUser == -1){
-            $query = "INSERT INTO Users (idUser, name, surname, email, password) ".
-                "VALUES ('".$this->idUser."','".$this->name."','".$this->surname."','".$this->email."','".$this->password."')";
-            if($connection->query($query)){
+
+    public function saveToDB(mysqli $connection) {
+        
+        if ($this->idUser == -1) {
+            $query = "INSERT INTO Users ( name, surname, email, password) " .
+                    "VALUES ('" . $this->name . "','" . $this->surname . "','" . $this->email . "','" . $this->password . "')";
+          var_dump($query);
+            if ($connection->query($query)) {
+                 $this->id = $connection->insert_id;
+                 
+                 
                 return true;
-            }else{
+            } else {
                 return false;
             }
-        }else{
-            $query = "UPDATE Users SET name='".$this->name."',"
-                ."surname='".$this->surname."',"
-                ."email='".$this->email."',"
-                ."password='".$this->password."' "
-                ."WHERE idUser=".$this->idUser;
-            if($connection->query($query)){
+        } else {
+            $query = "UPDATE Users SET name='" . $this->name . "',"
+                    . "surname='" . $this->surname . "',"
+                    . "email='" . $this->email . "',"
+                    . "password='" . $this->password . "' "
+                    . "WHERE idUser=" . $this->idUser;
+            if ($connection->query($query)) {
                 return true;
-            }else{
+            } else {
                 return false;
             }
         }
     }
-    public static function getUserByEmail(mysqli $connection,$email)
-    {
+
+    public static function getUserByEmail(mysqli $connection, $email) {
         $email = $connection->real_escape_string($email);
         $query = "SELECT * FROM Users WHERE email='" . $email . "'";
         $res = $connection->query($query);
         if ($res->num_rows == 1) {
             $row = $res->fetch_assoc();
-            $user = new User($row['idUser'], $row['email']);
+            $user = new User($row['id'], $row['email']);
             $user->setPassword($row['password']);
 
 
@@ -57,14 +67,14 @@ class User {
             return $user;
         }
     }
-    public static function getUserById(mysqli $connection,$idUser)
-    {
+
+    public static function getUserById(mysqli $connection, $idUser) {
         $email = $connection->real_escape_string($email);
-        $query = "SELECT * FROM Users WHERE idUser='" . $idUser. "'";
+        $query = "SELECT * FROM Users WHERE idUser='" . $idUser . "'";
         $res = $connection->query($query);
         if ($res->num_rows == 1) {
             $row = $res->fetch_assoc();
-            $user = new User($row['idUser'], $row['email']);
+            $user = new User($row['id'], $row['email']);
             $user->setPassword($row['password']);
 
 
@@ -72,50 +82,62 @@ class User {
             return $user;
         }
     }
+    
+    public static function loging(mysqli $connection, $email, $password) {
+        $user = self::getUserByEmail($connection, $email);
+                if($user && password_verify($password,  $user->password)){
+                    return $user;
+                }  else {
+                return FALSE;    
+                }
+    }
+
     //gettery i settery
-    public function getIdUser()
-    {
+    public function getIdUser() {
         return $this->idUser;
     }
-    public function setIdUser($idUser)
-    {
+
+    public function setIdUser($idUser) {
         $this->idUser = $idUser;
         return $this;
     }
-    public function getName()
-    {
+
+    public function getName() {
         return $this->name;
     }
-    public function setName($name)
-    {
+
+    public function setName($name) {
         $this->name = $name;
         return $this;
     }
-    public function getSurname()
-    {
+
+    public function getSurname() {
         return $this->surname;
     }
-    public function setSurname($surname)
-    {
+
+    public function setSurname($surname) {
         $this->surname = $surname;
         return $this;
     }
-    public function getEmail()
-    {
+
+    public function getEmail() {
         return $this->email;
     }
-    public function setEmail($email)
-    {
+
+    public function setEmail($email) {
         $this->email = $email;
         return $this;
     }
-    public function getPassword()
-    {
+
+    public function getPassword() {
         return $this->password;
     }
-    public function setPassword($password)
-    {
-        $this->password = $password;
-        return $this;
+
+public function setPassword($newPassword) {
+        if (is_string($newPassword) && strlen($newPassword) > 8) {
+            $hased = password_hash($newPassword, PASSWORD_BCRYPT);
+            $this->password = $hased;
+        }
     }
+
 }

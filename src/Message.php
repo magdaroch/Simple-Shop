@@ -33,7 +33,7 @@ class Message {
         }
     }
 
-    static public function loadAllSentMassagesByUserId(mysqli $connection, $userId) {
+    static public function loadAllRecivedMassagesByUserId(mysqli $connection, $userId) {
         $query = "SELECT  Messages.id, message, status, message_date, Admin.name AS sender, User2.name AS receiver
                  FROM Messages
                  JOIN Users ON Admin.id = Messages.adminId
@@ -71,6 +71,9 @@ class Message {
             return $massageToShow;
         }
         return null;
+    }
+        public function showMessage(){
+        echo "Message from Admin: " . $this->massage;
     }
 
     public function getId() {

@@ -1,4 +1,6 @@
 <?php
+
+require_once 'src/Admin.php';
 require_once 'src/User.php';
 require_once 'config.php';
 
@@ -10,10 +12,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $email = $_POST['email'];
         $password = $_POST['password'];
 
-        $user = User::getUserByEmail($conn, $email);
-        if ($user) {
+        $userAdmin = Admin::getUserByEmail($conn, $email);
+        if ($userAdmin) {
             
-            $_SESSION['userId'] = $user->getIdUser();
+            $_SESSION['userId'] =  $userAdmin->getIdUser();
 
 
             header('Location: index_login.php');
